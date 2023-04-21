@@ -4,9 +4,9 @@ import react from "@vitejs/plugin-react";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  base: "/osrs_api_testing/",
   server: {
     port: 1337,
-    base: "/osrs_api_testing/",
     proxy: {
       "/api": {
         target: "https://secure.runescape.com",
