@@ -157,7 +157,8 @@ const PlayerData = ({ p, delay }) => {
               }
             });
             setData(obj);
-          }).then;
+          })
+          .catch(alert);
       }, delay);
     }
   }, [p]);
@@ -222,13 +223,46 @@ function App() {
     }
   }, []);
 
+  const compare = useCallback(() => {
+    keys.forEach((k) => {
+      let title = k.title;
+      let statsToCompare = document.querySelectorAll(`[data-key="${title}"]`);
+      let arr = [];
+      statsToCompare?.forEach((el) => {
+        arr.push(parseFloat(el.dataset.val));
+        el.classList.add("worst");
+      });
+      let highestLvl = Math.max(...arr);
+      // console.log(
+      //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+      // );
+      let best = document.querySelectorAll(
+        `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+      );
+      best?.forEach((winningStat) => {
+        winningStat.classList.remove("worst");
+        if (best.length > 1) {
+          winningStat.classList.add("tie");
+        } else {
+          winningStat.classList.add("best");
+        }
+      });
+    });
+  }, []);
+
   useEffect(() => {
     if (players) {
       setSearchParams({ players: players.join(",") });
+      // if (players.length > 1) {
+      //   setTimeout(() => {
+      //     compare();
+      //   }, 3500);
+      // }
     } else {
       setSearchParams({});
     }
   }, [players]);
+
   return (
     <Routes>
       <Route
@@ -252,60 +286,76 @@ function App() {
                 // }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    updatePlayers(
-                      playerInput.current.value.replace(/,\s*/g, ",").split(",")
-                    );
+                    if (playerInput.current.value.length > 0) {
+                      updatePlayers(
+                        playerInput.current.value
+                          .replace(/,\s*/g, ",")
+                          .split(",")
+                      );
+                    } else {
+                      alert("You need to fill out some player names");
+                    }
                   }
                 }}
               />
               <button
-                onClick={() =>
-                  updatePlayers(
-                    playerInput.current.value.replace(/,\s*/g, ",").split(",")
-                  )
-                }
-              >
-                Save
-              </button>
-              <button
+                className="search-btn"
                 onClick={() => {
-                  updatePlayers(null);
+                  if (playerInput.current.value.length > 0) {
+                    updatePlayers(
+                      playerInput.current.value.replace(/,\s*/g, ",").split(",")
+                    );
+                  } else {
+                    alert("You need to fill out some player names");
+                  }
                 }}
               >
-                Reset
+                Get stats
               </button>
-              <button
-                onClick={() => {
-                  keys.forEach((k) => {
-                    let title = k.title;
-                    let statsToCompare = document.querySelectorAll(
-                      `[data-key="${title}"]`
-                    );
-                    let arr = [];
-                    statsToCompare?.forEach((el) => {
-                      arr.push(parseFloat(el.dataset.val));
-                      el.classList.add("worst");
-                    });
-                    let highestLvl = Math.max(...arr);
-                    // console.log(
-                    //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-                    // );
-                    let best = document.querySelectorAll(
-                      `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-                    );
-                    best?.forEach((winningStat) => {
-                      winningStat.classList.remove("worst");
-                      if (best.length > 1) {
-                        winningStat.classList.add("tie");
-                      } else {
-                        winningStat.classList.add("best");
-                      }
-                    });
-                  });
-                }}
-              >
-                Compare stats
-              </button>
+              {players && (
+                <>
+                  <button
+                    className="reset-btn"
+                    onClick={() => {
+                      updatePlayers(null);
+                    }}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    onClick={() => {
+                      keys.forEach((k) => {
+                        let title = k.title;
+                        let statsToCompare = document.querySelectorAll(
+                          `[data-key="${title}"]`
+                        );
+                        let arr = [];
+                        statsToCompare?.forEach((el) => {
+                          arr.push(parseFloat(el.dataset.val));
+                          el.classList.add("worst");
+                        });
+                        let highestLvl = Math.max(...arr);
+                        // console.log(
+                        //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+                        // );
+                        let best = document.querySelectorAll(
+                          `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+                        );
+                        best?.forEach((winningStat) => {
+                          winningStat.classList.remove("worst");
+                          if (best.length > 1) {
+                            winningStat.classList.add("tie");
+                          } else {
+                            winningStat.classList.add("best");
+                          }
+                        });
+                      });
+                    }}
+                  >
+                    Reveal grindiest
+                  </button>
+                </>
+              )}
             </fieldset>
             <div className="players-grid">
               {players?.map((p, index) => (

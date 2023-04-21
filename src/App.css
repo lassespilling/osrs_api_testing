@@ -102,3 +102,11 @@ input:focus {
 .worst {
   color: red;
 }
+.search-btn {
+  background-color: rgba(214, 133, 41, 0.8);
+}
+
+.reset-btn {
+  color: red;
+  background-color: rgba(56, 8, 8, 0.5);
+}
