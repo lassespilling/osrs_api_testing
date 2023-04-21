@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 1337,
+    base: "osrs_api_testing",
     proxy: {
       "/api": {
         target: "https://secure.runescape.com",
