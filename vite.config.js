@@ -7,12 +7,12 @@ export default defineConfig({
   base: "/osrs_api_testing/",
   server: {
     port: 1337,
-    proxy: {
-      "/api": {
-        target: "https://secure.runescape.com",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
-      },
-    },
+    // proxy: {
+    //   "/api": {
+    //     target: "https://secure.runescape.com",
+    //     changeOrigin: true,
+    //     rewrite: (path) => path.replace(/^\/api/, ""),
+    //   },
+    // },
   },
 });

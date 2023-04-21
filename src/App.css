@@ -9,11 +9,27 @@
 }
 
 body {
-  background-color: black;
+  background: black url("./assets/bg.gif") center center / cover no-repeat;
+  background-attachment: fixed;
   color: white;
   display: grid;
   place-content: center;
   margin: 0;
+}
+body:before {
+  content: "";
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(5px);
+}
+body > * {
+  position: relative;
+  z-index: 1;
 }
 .osrs-fields-group {
   display: flex;
@@ -43,9 +59,46 @@ input:focus {
   padding: 0.5rem 1rem;
   line-height: 1;
   font-size: 1rem;
+  text-align: left;
+}
+.player-stats {
+  border-collapse: collapse;
+}
+.player-stat-row {
+  border-bottom: 1px solid rgba(150, 150, 150, 0.2);
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: center;
+  height: 23px;
+}
+.player-stat-col {
+  gap: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.player-stat-icon {
+  width: 2rem;
+  height: 2rem;
+  clip-path: circle(30% at 50% 50%);
+  transform: scale(1.1);
 }
 .players-grid {
-  display: flex;
+  /* display: flex;
   flex-wrap: wrap;
-  width: 100%;
+  width: 100%; */
+  display: flex;
+  gap: 2rem;
+}
+
+.tie {
+  color: orange;
+}
+.best {
+  color: green;
+  font-weight: bold;
+}
+.worst {
+  color: red;
 }
