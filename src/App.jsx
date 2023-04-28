@@ -244,36 +244,36 @@ function App() {
     }
   }, [doneFetching, players]);
 
-  useEffect(() => {
-    if (canCompare) {
-      keys.forEach((k) => {
-        let title = k.title;
-        let statsToCompare = document.querySelectorAll(
-          `[data-key="${title}"]`
-        );
-        let arr = [];
-        statsToCompare?.forEach((el) => {
-          arr.push(parseFloat(el.dataset.val));
-          el.classList.add("worst");
-        });
-        let highestLvl = Math.max(...arr);
-        // console.log(
-        //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-        // );
-        let best = document.querySelectorAll(
-          `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-        );
-        best?.forEach((winningStat) => {
-          winningStat.classList.remove("worst");
-          if (best.length > 1) {
-            winningStat.classList.add("tie");
-          } else {
-            winningStat.classList.add("best");
-          }
-        });
-      });
-    }
-  }, [players, canCompare, setSearchParams]);
+  // useEffect(() => {
+  //   if (canCompare) {
+  //     keys.forEach((k) => {
+  //       let title = k.title;
+  //       let statsToCompare = document.querySelectorAll(
+  //         `[data-key="${title}"]`
+  //       );
+  //       let arr = [];
+  //       statsToCompare?.forEach((el) => {
+  //         arr.push(parseFloat(el.dataset.val));
+  //         el.classList.add("worst");
+  //       });
+  //       let highestLvl = Math.max(...arr);
+  //       // console.log(
+  //       //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+  //       // );
+  //       let best = document.querySelectorAll(
+  //         `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+  //       );
+  //       best?.forEach((winningStat) => {
+  //         winningStat.classList.remove("worst");
+  //         if (best.length > 1) {
+  //           winningStat.classList.add("tie");
+  //         } else {
+  //           winningStat.classList.add("best");
+  //         }
+  //       });
+  //     });
+  //   }
+  // }, [players, canCompare, setSearchParams]);
 
   useEffect(() => {
     if (players) {
@@ -331,7 +331,7 @@ function App() {
                   }
                 }}
               >
-                Reveal grindiest
+                Get stats
               </button>
               {players && (
                 <>
@@ -345,11 +345,10 @@ function App() {
                   >
                     Reset
                   </button>
-                  {/* <button
-                    ref={revealBtn}
+                  <button
                     onClick={() => {
 
-                      setSearchParams({ players: players.join(","), compare: true });
+                      setSearchParams({ players: players.join(",") });
                       keys.forEach((k) => {
                         let title = k.title;
                         let statsToCompare = document.querySelectorAll(
@@ -380,7 +379,7 @@ function App() {
                     }}
                   >
                     Reveal grindiest
-                  </button> */}
+                  </button>
                 </>
               )}
             </fieldset>
