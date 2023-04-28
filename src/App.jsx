@@ -130,7 +130,7 @@ const PlayerData = ({ p, delay }) => {
         // const backendUrl = import.meta.env.VITE_PROXY;
         axios
           .get(
-            "/api/m=hiscore_oldschool/index_lite.ws?player=" +
+            "/api/https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player=" +
             p,
             {
               headers: {

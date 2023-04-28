@@ -9,7 +9,7 @@ export default () => {
       // port: 1337,
       proxy: {
         '/api': {
-          target: 'https://crossorigin.me/https://secure.runescape.com',
+          target: 'https://crossorigin.me',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
