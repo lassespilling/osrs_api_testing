@@ -205,7 +205,6 @@ const PlayerData = ({ p, delay, last, onReady }) => {
           )
           .then((response) => {
             let obj = {};
-            console.log(response);
             if (response?.data) {
               response.data.split("\n").forEach((skillData, index) => {
                 let arr = skillData.split(",");
@@ -270,19 +269,7 @@ const PlayerData = ({ p, delay, last, onReady }) => {
 };
 
 function App() {
-
-
   let [searchParams, setSearchParams] = useSearchParams();
-  // function useStickyState(defaultValue, key) {
-  //   const [value, setValue] = useState(() => {
-  //     const stickyValue = window.localStorage.getItem(key);
-  //     return stickyValue ? JSON.parse(stickyValue) : defaultValue;
-  //   });
-  //   useEffect(() => {
-  //     window.localStorage.setItem(key, JSON.stringify(value));
-  //   }, [key, value]);
-  //   return [value, setValue];
-  // }
   const [players, setPlayers] = useState(null);
   const playerInput = useRef();
 
@@ -308,37 +295,6 @@ function App() {
     }
   }, [doneFetching, players]);
 
-  // useEffect(() => {
-  //   if (canCompare) {
-  //     keys.forEach((k) => {
-  //       let title = k.title;
-  //       let statsToCompare = document.querySelectorAll(
-  //         `[data-key="${title}"]`
-  //       );
-  //       let arr = [];
-  //       statsToCompare?.forEach((el) => {
-  //         arr.push(parseFloat(el.dataset.val));
-  //         el.classList.add("worst");
-  //       });
-  //       let highestLvl = Math.max(...arr);
-  //       // console.log(
-  //       //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-  //       // );
-  //       let best = document.querySelectorAll(
-  //         `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-  //       );
-  //       best?.forEach((winningStat) => {
-  //         winningStat.classList.remove("worst");
-  //         if (best.length > 1) {
-  //           winningStat.classList.add("tie");
-  //         } else {
-  //           winningStat.classList.add("best");
-  //         }
-  //       });
-  //     });
-  //   }
-  // }, [players, canCompare, setSearchParams]);
-
   useEffect(() => {
     if (players) {
       setSearchParams({ players: players.join(",") });
@@ -347,6 +303,15 @@ function App() {
     }
   }, [players, setSearchParams, canCompare]);
   const playersSwiperWrapper = useRef();
+
+  const [fact, setFact] = useState(null);
+  useEffect(() => {
+    axios.get("https://osrsfacts.net/api/v1/fact").then(r => {
+      if (r.data && r.data[0]?.content) {
+        setFact(r.data[0].content);
+      }
+    });
+  }, []);
 
   return (
     <Routes>
@@ -410,6 +375,13 @@ function App() {
                   </button>
                 </fieldset>
               </div>
+            }
+
+            {!players &&
+              <center>
+                <p className="random-fact-pretitle">Did you know..</p>
+                <blockquote className="random-fact">{fact}</blockquote>
+              </center>
             }
             {players && (
               <div className="ui-row">
@@ -487,7 +459,7 @@ function App() {
                   grabCursor={true}
                   // slidesPerView={width < 600 ? 2 : players?.length < parseFloat(width / 250).toFixed(1)}
                   slidesPerView={"auto"}
-                  enteredSlides={false}
+                  centeredSlides={false}
                   centerInsufficientSlides={true}
                   className="mySwiper"
                 >

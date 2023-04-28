@@ -251,7 +251,7 @@ h3 {
   pointer-events: none;
   right: 0;
   border-radius: 1rem;
-  opacity: 0.5;
+  opacity: .6;
   background: url("./assets/winner-dance.gif") center center / cover no-repeat;
 }
 
@@ -366,4 +366,14 @@ a {
   text-align: center;
   width: 100%;
   margin-top: 50px;
+}
+
+.random-fact-pretitle {
+  font-size: 0.9rem;
+  color: rgba(150, 150, 150, 0.8);
+}
+
+.random-fact {
+  width: 100%;
+  max-width: 600px;
 }
