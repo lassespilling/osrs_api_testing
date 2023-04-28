@@ -1,6 +1,4 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import { Routes, Route, useSearchParams } from "react-router-dom";
 
@@ -132,8 +130,8 @@ const PlayerData = ({ p, delay }) => {
         // const backendUrl = import.meta.env.VITE_PROXY;
         axios
           .get(
-            "https://cors-anywhere.herokuapp.com/https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player=" +
-              p,
+            "/api/m=hiscore_oldschool/index_lite.ws?player=" +
+            p,
             {
               headers: {
                 "X-Requested-With": "XMLHttpRequest",
@@ -161,7 +159,7 @@ const PlayerData = ({ p, delay }) => {
           .catch(alert);
       }, delay);
     }
-  }, [p]);
+  }, [p, delay]);
 
   return (
     <>
@@ -199,16 +197,16 @@ const PlayerData = ({ p, delay }) => {
 
 function App() {
   let [searchParams, setSearchParams] = useSearchParams();
-  function useStickyState(defaultValue, key) {
-    const [value, setValue] = useState(() => {
-      const stickyValue = window.localStorage.getItem(key);
-      return stickyValue ? JSON.parse(stickyValue) : defaultValue;
-    });
-    useEffect(() => {
-      window.localStorage.setItem(key, JSON.stringify(value));
-    }, [key, value]);
-    return [value, setValue];
-  }
+  // function useStickyState(defaultValue, key) {
+  //   const [value, setValue] = useState(() => {
+  //     const stickyValue = window.localStorage.getItem(key);
+  //     return stickyValue ? JSON.parse(stickyValue) : defaultValue;
+  //   });
+  //   useEffect(() => {
+  //     window.localStorage.setItem(key, JSON.stringify(value));
+  //   }, [key, value]);
+  //   return [value, setValue];
+  // }
   const [players, setPlayers] = useState(null);
   const playerInput = useRef();
 
@@ -221,34 +219,34 @@ function App() {
     if (playersQuery) {
       setPlayers(playersQuery?.split(","));
     }
-  }, []);
+  }, [searchParams]);
 
-  const compare = useCallback(() => {
-    keys.forEach((k) => {
-      let title = k.title;
-      let statsToCompare = document.querySelectorAll(`[data-key="${title}"]`);
-      let arr = [];
-      statsToCompare?.forEach((el) => {
-        arr.push(parseFloat(el.dataset.val));
-        el.classList.add("worst");
-      });
-      let highestLvl = Math.max(...arr);
-      // console.log(
-      //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-      // );
-      let best = document.querySelectorAll(
-        `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-      );
-      best?.forEach((winningStat) => {
-        winningStat.classList.remove("worst");
-        if (best.length > 1) {
-          winningStat.classList.add("tie");
-        } else {
-          winningStat.classList.add("best");
-        }
-      });
-    });
-  }, []);
+  // const compare = useCallback(() => {
+  //   keys.forEach((k) => {
+  //     let title = k.title;
+  //     let statsToCompare = document.querySelectorAll(`[data-key="${title}"]`);
+  //     let arr = [];
+  //     statsToCompare?.forEach((el) => {
+  //       arr.push(parseFloat(el.dataset.val));
+  //       el.classList.add("worst");
+  //     });
+  //     let highestLvl = Math.max(...arr);
+  //     // console.log(
+  //     //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+  //     // );
+  //     let best = document.querySelectorAll(
+  //       `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+  //     );
+  //     best?.forEach((winningStat) => {
+  //       winningStat.classList.remove("worst");
+  //       if (best.length > 1) {
+  //         winningStat.classList.add("tie");
+  //       } else {
+  //         winningStat.classList.add("best");
+  //       }
+  //     });
+  //   });
+  // }, []);
 
   useEffect(() => {
     if (players) {
@@ -261,7 +259,7 @@ function App() {
     } else {
       setSearchParams({});
     }
-  }, [players]);
+  }, [players, setSearchParams]);
 
   return (
     <Routes>

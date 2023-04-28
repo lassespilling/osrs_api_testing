@@ -15,7 +15,9 @@ body {
   display: grid;
   place-content: center;
   margin: 0;
+  font-size: 18px;
 }
+
 body:before {
   content: "";
   position: fixed;
@@ -27,10 +29,12 @@ body:before {
   left: 0;
   backdrop-filter: blur(5px);
 }
-body > * {
+
+body>* {
   position: relative;
   z-index: 1;
 }
+
 .osrs-fields-group {
   display: flex;
   justify-content: center;
@@ -40,16 +44,21 @@ body > * {
   border-color: rgba(150, 150, 150, 0.3);
   margin-bottom: 2rem;
 }
+
 input {
   background-color: rgba(219, 219, 219, 0.2);
   border: 1px solid rgba(150, 150, 150, 0.2);
   padding: 1rem;
   border-radius: 0.25rem;
+  color: white;
+  font-size: 1rem;
 }
+
 input:focus {
   border: 1px solid rgba(150, 150, 150, 0.4);
   outline: 1px solid blue;
 }
+
 input::placeholder {
   color: rgba(255, 255, 255, 0.55);
 }
@@ -64,9 +73,11 @@ input::placeholder {
   font-size: 1rem;
   text-align: left;
 }
+
 .player-stats {
   border-collapse: collapse;
 }
+
 .player-stat-row {
   border-bottom: 1px solid rgba(150, 150, 150, 0.2);
   display: flex;
@@ -75,18 +86,21 @@ input::placeholder {
   align-items: center;
   height: 23px;
 }
+
 .player-stat-col {
   gap: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .player-stat-icon {
   width: 2rem;
   height: 2rem;
   clip-path: circle(30% at 50% 50%);
   transform: scale(1.1);
 }
+
 .players-grid {
   /* display: flex;
   flex-wrap: wrap;
@@ -98,13 +112,16 @@ input::placeholder {
 .tie {
   color: orange;
 }
+
 .best {
   color: green;
   font-weight: bold;
 }
+
 .worst {
   color: red;
 }
+
 .search-btn {
   background-color: rgba(214, 133, 41, 0.8);
 }

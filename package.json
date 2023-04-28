@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "proxy": "https://crossorigin.me/https://secure.runescape.com",
   "scripts": {
+    "start": "npm-run-all --parallel dev server",
+    "server": "node server",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint src --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -11,9 +14,14 @@
   },
   "dependencies": {
     "axios": "^1.3.6",
+    "body-parser": "~1.5.2",
+    "express": "~4.4.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.10.0",
+    "request": "~2.36.0",
+    "vite-plugin-require": "^1.1.10",
+    "vite-plugin-string": "^1.2.1",
     "yarn": "^1.22.19"
   },
   "devDependencies": {
@@ -24,6 +32,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "npm-run-all": "^4.1.5",
     "vite": "^4.3.0"
   }
 }
