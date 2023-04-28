@@ -20,7 +20,7 @@ body {
 }
 
 body:after {
-  background: black url("./assets/bg.gif") bottom left / cover no-repeat;
+  background: black url("./assets/bg-compressed.gif") bottom left / cover no-repeat;
   content: "";
   position: fixed;
   width: 100vw;
@@ -252,7 +252,7 @@ h3 {
   right: 0;
   border-radius: 1rem;
   opacity: 0.5;
-  background: url("https://media.tenor.com/ix7DobY0RJQAAAAC/runescape-fortnite.gif") center center / cover no-repeat;
+  background: url("./assets/winner-dance.gif") center center / cover no-repeat;
 }
 
 
@@ -269,7 +269,7 @@ h3 {
   right: 0;
   border-radius: 1rem;
   opacity: 0.5;
-  background: url("https://media.tenor.com/nKr0CQy6ld0AAAAC/runescape-cry.gif") center center / cover no-repeat;
+  background: url("./assets/loser.gif") center center / cover no-repeat;
 }
 
 .player-card.winner .crown {
