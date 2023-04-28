@@ -9,7 +9,7 @@ export default () => {
       // port: 1337,
       proxy: {
         '/api': {
-          target: 'https://crossorigin.me',
+          target: 'https://api.allorigins.win/get?&url=',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

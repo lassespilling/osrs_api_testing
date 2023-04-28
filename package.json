@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "proxy": "https://crossorigin.me",
+  "proxy": "https://api.allorigins.win/get?&url=",
   "scripts": {
     "start": "vite",
     "build": "vite build",

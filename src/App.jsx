@@ -130,31 +130,31 @@ const PlayerData = ({ p, delay }) => {
         // const backendUrl = import.meta.env.VITE_PROXY;
         axios
           .get(
-            "/api/https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player=" +
+            // "/api/https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
+            "https://api.allorigins.win/get?&url=https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
+            +
             p,
-            {
-              headers: {
-                "X-Requested-With": "XMLHttpRequest",
-              },
-            }
+            {}
           )
           .then((response) => {
             let obj = {};
-            response.data.split("\n").forEach((skillData, index) => {
-              let arr = skillData.split(",");
-              let rank = arr[0];
-              let level = arr[1];
-              let experience = arr[2];
-              if (keys[index]) {
-                obj[keys[index].title] = {
-                  // raw: skillData,
-                  rank,
-                  level,
-                  experience,
-                };
-              }
-            });
-            setData(obj);
+            if (response?.data) {
+              response.data.contents.split("\n").forEach((skillData, index) => {
+                let arr = skillData.split(",");
+                let rank = arr[0];
+                let level = arr[1];
+                let experience = arr[2];
+                if (keys[index]) {
+                  obj[keys[index].title] = {
+                    // raw: skillData,
+                    rank,
+                    level,
+                    experience,
+                  };
+                }
+              });
+              setData(obj);
+            }
           })
           .catch(alert);
       }, delay);
