@@ -5,6 +5,8 @@ import { Routes, Route, useSearchParams } from "react-router-dom";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+import { FaCrown } from 'react-icons/fa';
+
 // Import Swiper styles
 import 'swiper/css';
 
@@ -197,7 +199,7 @@ const PlayerData = ({ p, delay, last, onReady }) => {
             }
           })
           .catch(e => {
-            alert(e);
+            console.error(e);
             updateReady(false);
           });
       }, delay);
@@ -313,7 +315,7 @@ function App() {
       setSearchParams({});
     }
   }, [players, setSearchParams, canCompare]);
-  const { width } = useWindowDimensions();
+  const playersSwiperWrapper = useRef();
   return (
     <Routes>
       <Route
@@ -374,6 +376,8 @@ function App() {
                         playerInput.current.value = null;
                         updatePlayers(null);
                         setDoneFetching(false);
+                        document.querySelectorAll(".winner").forEach(el => el.classList.remove("winner"));
+                        playersSwiperWrapper.current.classList.remove("winner-revealed");
                       }}
                     >
                       Reset
@@ -408,7 +412,21 @@ function App() {
                             }
                           });
                         });
-
+                        let cards = [];
+                        document.querySelectorAll(
+                          `.player-card`
+                        ).forEach(card => {
+                          let count = card.querySelectorAll(".best").length;
+                          cards.push({ id: card.getAttribute("id"), wins: count });
+                        });
+                        let sorted = cards?.sort((a, b) => a.wins > b.wins ? -1 : +1);
+                        let winner = sorted.shift();
+                        // console.log({ winner }); // Winner
+                        // console.log(sorted); // Losers
+                        if (winner) {
+                          document.getElementById(winner.id).classList.add("winner");
+                          playersSwiperWrapper.current.classList.add("winner-revealed");
+                        }
                       }}
                     >
                       Reveal grindiest
@@ -417,7 +435,7 @@ function App() {
                 )}
               </fieldset>
             </div>
-            <div className="players-swiper-wrapper">
+            <div className="players-swiper-wrapper" ref={playersSwiperWrapper}>
               {players?.length > 0 &&
                 <Swiper
                   grabCursor={true}
@@ -429,7 +447,8 @@ function App() {
                 >
                   {players?.map((p, index) => (
                     <SwiperSlide key={p + index}>
-                      <div className="player-card" key={`player-card-${p}`}>
+                      <div className="player-card" key={`player-card-${p}-${index}`} id={`player-card-${p}-${index}`}>
+                        <FaCrown className="crown" size="2rem" />
                         <h3>{p}</h3>
                         <hr />
                         <PlayerData p={p} delay={index * 100} last={index + 1 === players?.length} onReady={setDoneFetching} />
