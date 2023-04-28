@@ -60,7 +60,7 @@ const useWindowDimensions = () => {
 };
 
 
-const keys = [
+const keysFull = [
   { title: "Overall" },
   { title: "Attack", icon: Attack },
   { title: "Defence", icon: Defence },
@@ -154,6 +154,33 @@ const keys = [
   // "Zalcano",
   // "Zulrah",
 ];
+
+const keys = [
+  { title: "Overall" },
+  { title: "Att", icon: Attack },
+  { title: "Def", icon: Defence },
+  { title: "Str", icon: Strength },
+  { title: "Hp", icon: Hitpoints },
+  { title: "Rng", icon: Ranged },
+  { title: "Pray", icon: Prayer },
+  { title: "Mage", icon: Magic },
+  { title: "Cook", icon: Cooking },
+  { title: "Wc", icon: Woodcutting },
+  { title: "Fletch", icon: Fletching },
+  { title: "Fish", icon: Fishing },
+  { title: "Fm", icon: Firemaking },
+  { title: "Craft", icon: Crafting },
+  { title: "Smith", icon: Smithing },
+  { title: "Mining", icon: Mining },
+  { title: "Herb", icon: Herblore },
+  { title: "Agil", icon: Agility },
+  { title: "Thiev", icon: Thieving },
+  { title: "Slay", icon: Slayer },
+  { title: "Farm", icon: Farming },
+  { title: "Rc", icon: Runecrafting },
+  { title: "Hunter", icon: Hunter },
+  { title: "Con", icon: Construction }
+];
 const PlayerData = ({ p, delay, last, onReady }) => {
   const [data, setData] = useState(null);
   const updateReady = useCallback(
@@ -169,7 +196,7 @@ const PlayerData = ({ p, delay, last, onReady }) => {
         // const backendUrl = import.meta.env.VITE_PROXY;
         axios
           .get(
-            // "/api/https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
+            // "/api/m=hiscore_oldschool/index_lite.ws?player="
             "https://api.allorigins.win/get?&url=https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
             +
             p,
@@ -177,7 +204,7 @@ const PlayerData = ({ p, delay, last, onReady }) => {
           )
           .then((response) => {
             let obj = {};
-            if (response?.data) {
+            if (response?.data?.contents) {
               response.data.contents.split("\n").forEach((skillData, index) => {
                 let arr = skillData.split(",");
                 let rank = arr[0];
@@ -205,7 +232,7 @@ const PlayerData = ({ p, delay, last, onReady }) => {
       }, delay);
     }
   }, [p, delay, last, updateReady]);
-
+  const { width } = useWindowDimensions();
   return (
     <>
       {data ? (
@@ -221,11 +248,11 @@ const PlayerData = ({ p, delay, last, onReady }) => {
                     data-val={keyVal[1].level}
                   >
                     <td className="player-stat-col">
-                      <img
+                      {keys[index].icon && <img
                         src={keys[index].icon}
                         className="player-stat-icon"
-                      />
-                      {keyVal[0]}
+                      />}
+                      <span className="player-stat">{width > 900 ? keysFull[index].title : keys[index].title}</span>
                     </td>
                     <td className="player-stat-col">{keyVal[1]?.level}</td>
                   </tr>
@@ -241,6 +268,8 @@ const PlayerData = ({ p, delay, last, onReady }) => {
 };
 
 function App() {
+
+
   let [searchParams, setSearchParams] = useSearchParams();
   // function useStickyState(defaultValue, key) {
   //   const [value, setValue] = useState(() => {
@@ -316,133 +345,140 @@ function App() {
     }
   }, [players, setSearchParams, canCompare]);
   const playersSwiperWrapper = useRef();
+
   return (
     <Routes>
       <Route
         path="/*"
         element={
-          <section>
-            <div className="osrs-fields-group-wrapper">
-              <fieldset className="osrs-fields-group">
-                <legend>
-                  <h1>Grindiest.</h1>
-                </legend>
-                {/* <pre>{JSON.stringify(canCompare, null, 1)}</pre> */}
-                <input
-                  type="text"
-                  name=""
-                  id=""
-                  defaultValue={players?.join() || null}
-                  placeholder="Player names (comma separated)"
-                  ref={playerInput}
-                  // onChange={(e) => {
-                  //   if (e.target.value.length === 0) {
-                  //     updatePlayers(null);
-                  //   }
-                  // }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
+          <section className="content-row">
+            {!players &&
+              <div className="osrs-fields-group-wrapper">
+                <fieldset className="osrs-fields-group">
+                  <legend>
+                    <h1>Grindiest.</h1>
+                  </legend>
+                  {/* <pre>{JSON.stringify(canCompare, null, 1)}</pre> */}
+                  <input
+                    type="text"
+                    name=""
+                    id=""
+                    defaultValue={players?.join() || null}
+                    placeholder="Player names (comma separated)"
+                    ref={playerInput}
+                    // onChange={(e) => {
+                    //   if (e.target.value.length === 0) {
+                    //     updatePlayers(null);
+                    //   }
+                    // }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        if (playerInput.current.value.length > 0) {
+                          updatePlayers(
+                            playerInput.current.value
+                              .replace(/,\s*/g, ",")
+                              .split(",")
+                          );
+                        } else {
+                          alert("You need to fill out some player names");
+                        }
+                      }
+                    }}
+                  />
+                  <button
+                    className="search-btn"
+                    onClick={() => {
+                      document.querySelectorAll(".winner").forEach(el => el.classList.remove("winner"));
+                      playersSwiperWrapper.current.classList.remove("winner-revealed");
+                      document.querySelectorAll(".player-stat-row").forEach(el => {
+                        el.classList.remove("best");
+                        el.classList.remove("worst");
+                        el.classList.remove("tie");
+                      });
                       if (playerInput.current.value.length > 0) {
                         updatePlayers(
-                          playerInput.current.value
-                            .replace(/,\s*/g, ",")
-                            .split(",")
+                          playerInput.current.value.replace(/,\s*/g, ",").split(",")
                         );
                       } else {
                         alert("You need to fill out some player names");
                       }
-                    }
-                  }}
-                />
+                    }}
+                  >
+                    Get stats
+                  </button>
+                </fieldset>
+              </div>
+            }
+            {players && (
+              <div className="ui-row">
                 <button
-                  className="search-btn"
+                  className="reset-btn"
                   onClick={() => {
+                    let previousPlayers = [...players];
+                    updatePlayers(null);
+                    setDoneFetching(false);
                     document.querySelectorAll(".winner").forEach(el => el.classList.remove("winner"));
                     playersSwiperWrapper.current.classList.remove("winner-revealed");
-                    document.querySelectorAll(".player-stat-row").forEach(el => {
-                      el.classList.remove("best");
-                      el.classList.remove("worst");
-                      el.classList.remove("tie");
-                    });
-                    if (playerInput.current.value.length > 0) {
-                      updatePlayers(
-                        playerInput.current.value.replace(/,\s*/g, ",").split(",")
+                    setTimeout(() => {
+                      playerInput.current.value = previousPlayers.join();
+                      playerInput.current.focus();
+                    }, playerInput.current);
+                  }}
+                >
+                  Reset
+                </button>
+                <button
+                  onClick={() => {
+
+                    setSearchParams({ players: players.join(",") });
+                    keys.forEach((k) => {
+                      let key = k;
+                      let title = key.title;
+                      let statsToCompare = document.querySelectorAll(
+                        `[data-key="${title}"]`
                       );
-                    } else {
-                      alert("You need to fill out some player names");
+                      let arr = [];
+                      statsToCompare?.forEach((el) => {
+                        arr.push(parseFloat(el.dataset.val));
+                        el.classList.add("worst");
+                      });
+                      let highestLvl = Math.max(...arr);
+                      // console.log(
+                      //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+                      // );
+                      let best = document.querySelectorAll(
+                        `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+                      );
+                      best?.forEach((winningStat) => {
+                        winningStat.classList.remove("worst");
+                        if (best.length > 1) {
+                          winningStat.classList.add("tie");
+                        } else {
+                          winningStat.classList.add("best");
+                        }
+                      });
+                    });
+                    let cards = [];
+                    document.querySelectorAll(
+                      `.player-card`
+                    ).forEach(card => {
+                      let count = card.querySelectorAll(".best").length;
+                      cards.push({ id: card.getAttribute("id"), wins: count });
+                    });
+                    let sorted = cards?.sort((a, b) => a.wins > b.wins ? -1 : +1);
+                    let winner = sorted.shift();
+                    // console.log({ winner }); // Winner
+                    // console.log(sorted); // Losers
+                    if (winner) {
+                      document.getElementById(winner.id).classList.add("winner");
+                      playersSwiperWrapper.current.classList.add("winner-revealed");
                     }
                   }}
                 >
-                  Get stats
+                  Reveal grindiest
                 </button>
-                {players && (
-                  <>
-                    <button
-                      className="reset-btn"
-                      onClick={() => {
-                        playerInput.current.value = null;
-                        updatePlayers(null);
-                        setDoneFetching(false);
-                        document.querySelectorAll(".winner").forEach(el => el.classList.remove("winner"));
-                        playersSwiperWrapper.current.classList.remove("winner-revealed");
-                        playerInput.current.focus();
-                      }}
-                    >
-                      Reset
-                    </button>
-                    <button
-                      onClick={() => {
-
-                        setSearchParams({ players: players.join(",") });
-                        keys.forEach((k) => {
-                          let title = k.title;
-                          let statsToCompare = document.querySelectorAll(
-                            `[data-key="${title}"]`
-                          );
-                          let arr = [];
-                          statsToCompare?.forEach((el) => {
-                            arr.push(parseFloat(el.dataset.val));
-                            el.classList.add("worst");
-                          });
-                          let highestLvl = Math.max(...arr);
-                          // console.log(
-                          //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-                          // );
-                          let best = document.querySelectorAll(
-                            `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-                          );
-                          best?.forEach((winningStat) => {
-                            winningStat.classList.remove("worst");
-                            if (best.length > 1) {
-                              winningStat.classList.add("tie");
-                            } else {
-                              winningStat.classList.add("best");
-                            }
-                          });
-                        });
-                        let cards = [];
-                        document.querySelectorAll(
-                          `.player-card`
-                        ).forEach(card => {
-                          let count = card.querySelectorAll(".best").length;
-                          cards.push({ id: card.getAttribute("id"), wins: count });
-                        });
-                        let sorted = cards?.sort((a, b) => a.wins > b.wins ? -1 : +1);
-                        let winner = sorted.shift();
-                        // console.log({ winner }); // Winner
-                        // console.log(sorted); // Losers
-                        if (winner) {
-                          document.getElementById(winner.id).classList.add("winner");
-                          playersSwiperWrapper.current.classList.add("winner-revealed");
-                        }
-                      }}
-                    >
-                      Reveal grindiest
-                    </button>
-                  </>
-                )}
-              </fieldset>
-            </div>
+              </div>
+            )}
             <div className="players-swiper-wrapper" ref={playersSwiperWrapper}>
               {players?.length > 0 &&
                 <Swiper
@@ -466,8 +502,7 @@ function App() {
                 </Swiper>
               }
             </div>
-            <div className="players-grid">
-            </div>
+
             <p style={{ color: "rgba(150,150,150,0.6)" }} className="credits">Project repo: <a href="https://github.com/lassespilling/osrs_api_testing" title="Go to github" className="row">/lassespilling/osrs_api_testing<AiFillGithub size="1em" /> </a></p>
           </section>
         }
