@@ -2,6 +2,12 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import "./App.css";
 import { Routes, Route, useSearchParams } from "react-router-dom";
 
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+// Import Swiper styles
+import 'swiper/css';
+
 import axios from "axios";
 import Attack from "./assets/skills/Attack.jpg";
 import Defence from "./assets/skills/Defence.jpg";
@@ -26,6 +32,31 @@ import Farming from "./assets/skills/Farming.jpg";
 import Runecrafting from "./assets/skills/Runecrafting.jpg";
 import Hunter from "./assets/skills/Hunter.jpg";
 import Construction from "./assets/skills/Construction.jpg";
+import { AiFillGithub } from 'react-icons/ai';
+
+function getWindowDimensions() {
+  const { innerWidth: width, innerHeight: height } = window;
+  return {
+    width,
+    height
+  };
+}
+
+const useWindowDimensions = () => {
+  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowDimensions(getWindowDimensions());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return windowDimensions;
+};
+
 
 const keys = [
   { title: "Overall" },
@@ -282,116 +313,135 @@ function App() {
       setSearchParams({});
     }
   }, [players, setSearchParams, canCompare]);
+  const { width } = useWindowDimensions();
   return (
     <Routes>
       <Route
         path="/*"
         element={
           <section>
-            <fieldset className="osrs-fields-group">
-              <legend>
-                <h1>Grindiest.</h1>
-              </legend>
-              {/* <pre>{JSON.stringify(canCompare, null, 1)}</pre> */}
-              <input
-                type="text"
-                name=""
-                id=""
-                defaultValue={players?.join() || null}
-                placeholder="Player names (comma separated)"
-                ref={playerInput}
-                // onChange={(e) => {
-                //   if (e.target.value.length === 0) {
-                //     updatePlayers(null);
-                //   }
-                // }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
+            <div className="osrs-fields-group-wrapper">
+              <fieldset className="osrs-fields-group">
+                <legend>
+                  <h1>Grindiest.</h1>
+                </legend>
+                {/* <pre>{JSON.stringify(canCompare, null, 1)}</pre> */}
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  defaultValue={players?.join() || null}
+                  placeholder="Player names (comma separated)"
+                  ref={playerInput}
+                  // onChange={(e) => {
+                  //   if (e.target.value.length === 0) {
+                  //     updatePlayers(null);
+                  //   }
+                  // }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      if (playerInput.current.value.length > 0) {
+                        updatePlayers(
+                          playerInput.current.value
+                            .replace(/,\s*/g, ",")
+                            .split(",")
+                        );
+                      } else {
+                        alert("You need to fill out some player names");
+                      }
+                    }
+                  }}
+                />
+                <button
+                  className="search-btn"
+                  onClick={() => {
                     if (playerInput.current.value.length > 0) {
                       updatePlayers(
-                        playerInput.current.value
-                          .replace(/,\s*/g, ",")
-                          .split(",")
+                        playerInput.current.value.replace(/,\s*/g, ",").split(",")
                       );
                     } else {
                       alert("You need to fill out some player names");
                     }
-                  }
-                }}
-              />
-              <button
-                className="search-btn"
-                onClick={() => {
-                  if (playerInput.current.value.length > 0) {
-                    updatePlayers(
-                      playerInput.current.value.replace(/,\s*/g, ",").split(",")
-                    );
-                  } else {
-                    alert("You need to fill out some player names");
-                  }
-                }}
-              >
-                Get stats
-              </button>
-              {players && (
-                <>
-                  <button
-                    className="reset-btn"
-                    onClick={() => {
-                      playerInput.current.value = null;
-                      updatePlayers(null);
-                      setDoneFetching(false);
-                    }}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    onClick={() => {
+                  }}
+                >
+                  Get stats
+                </button>
+                {players && (
+                  <>
+                    <button
+                      className="reset-btn"
+                      onClick={() => {
+                        playerInput.current.value = null;
+                        updatePlayers(null);
+                        setDoneFetching(false);
+                      }}
+                    >
+                      Reset
+                    </button>
+                    <button
+                      onClick={() => {
 
-                      setSearchParams({ players: players.join(",") });
-                      keys.forEach((k) => {
-                        let title = k.title;
-                        let statsToCompare = document.querySelectorAll(
-                          `[data-key="${title}"]`
-                        );
-                        let arr = [];
-                        statsToCompare?.forEach((el) => {
-                          arr.push(parseFloat(el.dataset.val));
-                          el.classList.add("worst");
+                        setSearchParams({ players: players.join(",") });
+                        keys.forEach((k) => {
+                          let title = k.title;
+                          let statsToCompare = document.querySelectorAll(
+                            `[data-key="${title}"]`
+                          );
+                          let arr = [];
+                          statsToCompare?.forEach((el) => {
+                            arr.push(parseFloat(el.dataset.val));
+                            el.classList.add("worst");
+                          });
+                          let highestLvl = Math.max(...arr);
+                          // console.log(
+                          //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+                          // );
+                          let best = document.querySelectorAll(
+                            `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+                          );
+                          best?.forEach((winningStat) => {
+                            winningStat.classList.remove("worst");
+                            if (best.length > 1) {
+                              winningStat.classList.add("tie");
+                            } else {
+                              winningStat.classList.add("best");
+                            }
+                          });
                         });
-                        let highestLvl = Math.max(...arr);
-                        // console.log(
-                        //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-                        // );
-                        let best = document.querySelectorAll(
-                          `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-                        );
-                        best?.forEach((winningStat) => {
-                          winningStat.classList.remove("worst");
-                          if (best.length > 1) {
-                            winningStat.classList.add("tie");
-                          } else {
-                            winningStat.classList.add("best");
-                          }
-                        });
-                      });
 
-                    }}
-                  >
-                    Reveal grindiest
-                  </button>
-                </>
-              )}
-            </fieldset>
-            <div className="players-grid">
-              {players?.map((p, index) => (
-                <div className="player-card" key={`player-card-${p}`}>
-                  <h3>{p}</h3>
-                  <hr />
-                  <PlayerData p={p} delay={index * 100} last={index + 1 === players?.length} onReady={setDoneFetching} />
-                </div>
-              ))}
+                      }}
+                    >
+                      Reveal grindiest
+                    </button>
+                  </>
+                )}
+              </fieldset>
             </div>
+            <div className="players-swiper-wrapper">
+              {players?.length > 0 &&
+                <Swiper
+                  grabCursor={true}
+                  // slidesPerView={width < 600 ? 2 : players?.length < parseFloat(width / 250).toFixed(1)}
+                  slidesPerView={"auto"}
+                  enteredSlides={false}
+                  centerInsufficientSlides={true}
+                  className="mySwiper"
+                >
+                  {players?.map((p, index) => (
+                    <SwiperSlide key={p + index}>
+                      <div className="player-card" key={`player-card-${p}`}>
+                        <h3>{p}</h3>
+                        <hr />
+                        <PlayerData p={p} delay={index * 100} last={index + 1 === players?.length} onReady={setDoneFetching} />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              }
+            </div>
+            <div className="players-grid">
+            </div>
+            <p style={{ color: "rgba(150,150,150,0.6)" }} className="credits">Project repo: <a href="https://github.com/lassespilling/osrs_api_testing" title="Go to github" className="row">/lassespilling/osrs_api_testing<AiFillGithub size="1em" /> </a></p>
           </section>
         }
       />
