@@ -380,7 +380,7 @@ function App() {
             {!players &&
               <center>
                 <p className="random-fact-pretitle">Did you know..</p>
-                <blockquote className="random-fact">{fact}</blockquote>
+                <blockquote className="random-fact"><p>{fact}</p></blockquote>
               </center>
             }
             {players && (
