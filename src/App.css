@@ -176,6 +176,7 @@ input::placeholder {
   mix-blend-mode: lighten;
   left: 0;
   top: 0;
+  pointer-events: none;
   right: 0;
   border-radius: 1rem;
   opacity: 0.3;
