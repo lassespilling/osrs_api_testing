@@ -9,7 +9,8 @@ export default () => {
       // port: 1337,
       proxy: {
         '/api': {
-          target: 'https://api.allorigins.win/get?&url=',
+          target:
+            'https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player=',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

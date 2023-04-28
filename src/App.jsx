@@ -196,16 +196,18 @@ const PlayerData = ({ p, delay, last, onReady }) => {
         // const backendUrl = import.meta.env.VITE_PROXY;
         axios
           .get(
-            // "/api/m=hiscore_oldschool/index_lite.ws?player="
-            "https://api.allorigins.win/get?&url=https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
+            // "/api/"
+            // `https://api.allorigins.win/get?url=${encodeURIComponent(`https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player=${p}`)}`
+            "https://api.codetabs.com/v1/proxy?quest=https://secure.runescape.com/m=hiscore_oldschool/index_lite.ws?player="
             +
-            p,
-            {}
+            p
+            // {}
           )
           .then((response) => {
             let obj = {};
-            if (response?.data?.contents) {
-              response.data.contents.split("\n").forEach((skillData, index) => {
+            console.log(response);
+            if (response?.data) {
+              response.data.split("\n").forEach((skillData, index) => {
                 let arr = skillData.split(",");
                 let rank = arr[0];
                 let level = arr[1];
