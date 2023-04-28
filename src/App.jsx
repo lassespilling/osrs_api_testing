@@ -121,8 +121,14 @@ const keys = [
   // "Zalcano",
   // "Zulrah",
 ];
-const PlayerData = ({ p, delay }) => {
+const PlayerData = ({ p, delay, last, onReady }) => {
   const [data, setData] = useState(null);
+  const updateReady = useCallback(
+    (s) => {
+      onReady(s);
+    },
+    [onReady],
+  );
 
   useEffect(() => {
     if (p) {
@@ -154,12 +160,18 @@ const PlayerData = ({ p, delay }) => {
                 }
               });
               setData(obj);
+              if (last) {
+                updateReady(true);
+              }
             }
           })
-          .catch(alert);
+          .catch(e => {
+            alert(e);
+            updateReady(false);
+          });
       }, delay);
     }
-  }, [p, delay]);
+  }, [p, delay, last, updateReady]);
 
   return (
     <>
@@ -221,46 +233,55 @@ function App() {
     }
   }, [searchParams]);
 
-  // const compare = useCallback(() => {
-  //   keys.forEach((k) => {
-  //     let title = k.title;
-  //     let statsToCompare = document.querySelectorAll(`[data-key="${title}"]`);
-  //     let arr = [];
-  //     statsToCompare?.forEach((el) => {
-  //       arr.push(parseFloat(el.dataset.val));
-  //       el.classList.add("worst");
-  //     });
-  //     let highestLvl = Math.max(...arr);
-  //     // console.log(
-  //     //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-  //     // );
-  //     let best = document.querySelectorAll(
-  //       `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
-  //     );
-  //     best?.forEach((winningStat) => {
-  //       winningStat.classList.remove("worst");
-  //       if (best.length > 1) {
-  //         winningStat.classList.add("tie");
-  //       } else {
-  //         winningStat.classList.add("best");
-  //       }
-  //     });
-  //   });
-  // }, []);
+
+  const [canCompare, setCanCompare] = useState(false);
+  const [doneFetching, setDoneFetching] = useState(false);
+  useEffect(() => {
+    if (doneFetching && players?.length > 1) {
+      setCanCompare(true);
+    } else {
+      setCanCompare(false);
+    }
+  }, [doneFetching, players]);
+
+  useEffect(() => {
+    if (canCompare) {
+      keys.forEach((k) => {
+        let title = k.title;
+        let statsToCompare = document.querySelectorAll(
+          `[data-key="${title}"]`
+        );
+        let arr = [];
+        statsToCompare?.forEach((el) => {
+          arr.push(parseFloat(el.dataset.val));
+          el.classList.add("worst");
+        });
+        let highestLvl = Math.max(...arr);
+        // console.log(
+        //   `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+        // );
+        let best = document.querySelectorAll(
+          `.player-stat-row[data-key="${title}"][data-val="${highestLvl}"]`
+        );
+        best?.forEach((winningStat) => {
+          winningStat.classList.remove("worst");
+          if (best.length > 1) {
+            winningStat.classList.add("tie");
+          } else {
+            winningStat.classList.add("best");
+          }
+        });
+      });
+    }
+  }, [players, canCompare, setSearchParams]);
 
   useEffect(() => {
     if (players) {
       setSearchParams({ players: players.join(",") });
-      // if (players.length > 1) {
-      //   setTimeout(() => {
-      //     compare();
-      //   }, 3500);
-      // }
     } else {
       setSearchParams({});
     }
-  }, [players, setSearchParams]);
-
+  }, [players, setSearchParams, canCompare]);
   return (
     <Routes>
       <Route
@@ -271,10 +292,12 @@ function App() {
               <legend>
                 <h1>Grindiest.</h1>
               </legend>
+              {/* <pre>{JSON.stringify(canCompare, null, 1)}</pre> */}
               <input
                 type="text"
                 name=""
                 id=""
+                defaultValue={players?.join() || null}
                 placeholder="Player names (comma separated)"
                 ref={playerInput}
                 // onChange={(e) => {
@@ -308,20 +331,25 @@ function App() {
                   }
                 }}
               >
-                Get stats
+                Reveal grindiest
               </button>
               {players && (
                 <>
                   <button
                     className="reset-btn"
                     onClick={() => {
+                      playerInput.current.value = null;
                       updatePlayers(null);
+                      setDoneFetching(false);
                     }}
                   >
                     Reset
                   </button>
-                  <button
+                  {/* <button
+                    ref={revealBtn}
                     onClick={() => {
+
+                      setSearchParams({ players: players.join(","), compare: true });
                       keys.forEach((k) => {
                         let title = k.title;
                         let statsToCompare = document.querySelectorAll(
@@ -348,10 +376,11 @@ function App() {
                           }
                         });
                       });
+
                     }}
                   >
                     Reveal grindiest
-                  </button>
+                  </button> */}
                 </>
               )}
             </fieldset>
@@ -360,7 +389,7 @@ function App() {
                 <div className="player-card" key={`player-card-${p}`}>
                   <h3>{p}</h3>
                   <hr />
-                  <PlayerData p={p} delay={index * 100} />
+                  <PlayerData p={p} delay={index * 100} last={index + 1 === players?.length} onReady={setDoneFetching} />
                 </div>
               ))}
             </div>
