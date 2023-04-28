@@ -357,6 +357,13 @@ function App() {
                 <button
                   className="search-btn"
                   onClick={() => {
+                    document.querySelectorAll(".winner").forEach(el => el.classList.remove("winner"));
+                    playersSwiperWrapper.current.classList.remove("winner-revealed");
+                    document.querySelectorAll(".player-stat-row").forEach(el => {
+                      el.classList.remove("best");
+                      el.classList.remove("worst");
+                      el.classList.remove("tie");
+                    });
                     if (playerInput.current.value.length > 0) {
                       updatePlayers(
                         playerInput.current.value.replace(/,\s*/g, ",").split(",")
@@ -378,6 +385,7 @@ function App() {
                         setDoneFetching(false);
                         document.querySelectorAll(".winner").forEach(el => el.classList.remove("winner"));
                         playersSwiperWrapper.current.classList.remove("winner-revealed");
+                        playerInput.current.focus();
                       }}
                     >
                       Reset
@@ -451,7 +459,7 @@ function App() {
                         <FaCrown className="crown" size="2rem" />
                         <h3>{p}</h3>
                         <hr />
-                        <PlayerData p={p} delay={index * 100} last={index + 1 === players?.length} onReady={setDoneFetching} />
+                        <PlayerData p={p} delay={index * 300} last={index + 1 === players?.length} onReady={setDoneFetching} />
                       </div>
                     </SwiperSlide>
                   ))}

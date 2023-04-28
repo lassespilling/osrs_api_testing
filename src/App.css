@@ -79,7 +79,7 @@ input::placeholder {
   line-height: 1;
   font-size: 1rem;
   text-align: left;
-  transform-origin: center;
+  transform-origin: bottom center;
   position: relative;
   transition: all 0.2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
 }
@@ -157,7 +157,7 @@ input::placeholder {
 
 
 .crown {
-  fill: yellow;
+  fill: gold;
   position: absolute;
   top: 0;
   right: 0;
@@ -165,6 +165,10 @@ input::placeholder {
   opacity: 0;
   pointer-events: none;
   transition: all 0.2s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+.player-card.winner {
+  box-shadow: 0px 0px 5px gold;
 }
 
 .player-card.winner:before {
@@ -180,7 +184,6 @@ input::placeholder {
   right: 0;
   border-radius: 1rem;
   opacity: 0.3;
-  box-shadow: 0px 0px 5px yellow;
   background: url("https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGIxNzVmNGEyNDE3MjYzNDZhYzM5NTI5N2IyZGMxOWM5YWEyN2YwOCZlcD12MV9pbnRlcm5hbF9naWZzX2dpZklkJmN0PWc/3ohs4ucXR6NYRxmpTa/giphy.gif") center center / cover no-repeat;
 }
 
@@ -189,7 +192,8 @@ input::placeholder {
 }
 
 .winner-revealed .player-card:not(.winner) {
-  transform: translateY(2rem) scale(0.9);
+  transform: scale(0.95);
+  box-shadow: 0px 0px 5px grey;
 }
 
 
